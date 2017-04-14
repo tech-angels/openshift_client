@@ -16,7 +16,8 @@ module OpenshiftClient
     # This cancels the need to define the classes
     # manually on every new entity addition,
     # and especially since currently the class body is empty
-    ENTITY_TYPES = %w(Project Route).map do |et|
+    ENTITY_TYPES = %w(Project Route ClusterRoleBinding Build BuildConfig Image
+                      ImageStream).map do |et|
       [OpenshiftClient.const_set(et, Class.new(RecursiveOpenStruct)), et]
     end
 
@@ -36,9 +37,16 @@ module OpenshiftClient
                      password:          nil,
                      bearer_token:      nil,
                      bearer_token_file: nil
-                   }
+                   },
+                   socket_options: {
+                     socket_class:     nil,
+                     ssl_socket_class: nil
+                   },
+                   http_proxy_uri: nil
                   )
-      initialize_client(uri, path, version, ssl_options: ssl_options, auth_options: auth_options)
+      initialize_client(uri, path, version, ssl_options: ssl_options, auth_options: auth_options,
+                                            socket_options: socket_options,
+                                            http_proxy_uri: http_proxy_uri)
     end
 
     def all_entities
